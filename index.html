@@ -87,7 +87,7 @@ label{font-size:12px;color:var(--muted);font-weight:600;display:block;margin-bot
 /* DAY PILLS */
 .day-pills{display:flex;gap:7px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x;}
 .day-pills::-webkit-scrollbar{display:none;}
-.day-pill{flex-shrink:0;padding:8px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;font-size:12px;font-weight:600;color:var(--muted);min-height:44px;display:flex;align-items:center;transition:all .15s;}
+.day-pill{flex-shrink:0;padding:6px 0;border-radius:14px;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;font-size:11px;font-weight:600;color:var(--muted);min-height:32px;width:calc((100% - 42px)/7);display:flex;align-items:center;justify-content:center;transition:all .15s;}
 .day-pill.active{background:var(--accent);border-color:var(--accent);color:#fff;}
 .day-pill.today-hl{border-color:var(--accent);color:var(--accent);}
 
@@ -210,7 +210,7 @@ label{font-size:12px;color:var(--muted);font-weight:600;display:block;margin-bot
 /* PHASE TABS */
 .phase-tabs{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x;}
 .phase-tabs::-webkit-scrollbar{display:none;}
-.phase-tab{flex-shrink:0;padding:7px 13px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap;min-height:36px;display:flex;align-items:center;transition:all .15s;}
+.phase-tab{flex-shrink:0;padding:5px 0;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;font-size:11px;font-weight:600;color:var(--muted);white-space:nowrap;min-height:30px;width:calc((100% - 24px)/5);display:flex;align-items:center;justify-content:center;transition:all .15s;}
 .phase-tab.active{background:var(--accent-lt);border-color:var(--accent);color:var(--accent-dk);}
 
 /* IBS BANNER */
@@ -446,6 +446,11 @@ const DAYS = [
        youtubeSearch:'dumbbell bicep curl form beginners',
        how:'Stand with light dumbbells. Curl up squeezing bicep hard. Lower in 3 sec. Elbows at sides — perfect form beats heavy weight.',
        img:'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=600&q=70'},
+      {name:'Push-Ups',muscle:'Chest, Triceps, Shoulders',sets:3,reps:'AMRAP',sw:'Bodyweight — go to failure',restSeconds:60,
+       muscles:{primary:['lowerChest','upperChest'],secondary:['triceps','frontDelts'],stabilizers:['abs','serratus']},
+       youtubeSearch:'push ups proper form beginners',
+       how:'Hands shoulder-width, core tight. Lower chest to 2cm from floor in 3 sec. Press up explosively. If regular is too hard, do knee push-ups. Track your max reps — this is your benchmark.',
+       img:'https://images.unsplash.com/photo-1598971457999-ca4ef48a9a71?w=600&q=70'},
     ],
     mainFocus:'Push — Chest, Shoulders, Triceps',
     mainExercises:[
@@ -479,6 +484,12 @@ const DAYS = [
        youtubeSearch:'tricep rope pushdown form technique',
        how:'Stand at cable, grip rope. Elbows pinned to sides. Push rope down and outward, fully extend. Squeeze tricep at bottom.',
        img:'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=600&q=70'},
+      {name:'Push-Ups (Weighted)',muscle:'Chest, Triceps, Shoulders',sets:3,reps:'15–20',sw:'Add weight plate on back when easy',restSeconds:60,
+       p2s:4,p2r:'20+',
+       muscles:{primary:['lowerChest','upperChest'],secondary:['triceps','frontDelts'],stabilizers:['abs','serratus']},
+       youtubeSearch:'weighted push ups chest workout',
+       how:'Place a weight plate on your upper back for resistance. Control the descent (3 sec down), explosive push. Progress from bodyweight → 10kg → 20kg over the 20 weeks.',
+       img:'https://images.unsplash.com/photo-1598971457999-ca4ef48a9a71?w=600&q=70'},
     ],
     core:[
       {name:'Plank',sets:3,reps:'30–45 sec',restSeconds:45,tip:"Elbows under shoulders, body straight. Squeeze abs and glutes. Don't let hips sag."},
@@ -2195,7 +2206,12 @@ function TrainTab({startDate, workoutDone, setWorkoutDone, daily, setDaily, exLo
         );
       })()}
 
-      {isToday && (
+      {dayData.tag==='REST' ? (
+        <div style={{background:'#F0FDF4',border:'1px solid #BBF7D0',borderRadius:12,padding:'14px 16px',marginBottom:12}}>
+          <div style={{fontSize:14,fontWeight:800,color:'#166534',marginBottom:4}}>🌿 Rest & Recovery Day</div>
+          <div style={{fontSize:13,color:'#166634',lineHeight:1.6}}>No gym today. Focus on sleep, hydration, light walking, and stretching. Recovery is where muscles actually grow.</div>
+        </div>
+      ) : isToday && (
         workoutDone[today]==='rest' ? (
           <div style={{background:'#F3F4F6',borderRadius:12,padding:'12px 16px',marginBottom:12,
             display:'flex',alignItems:'center',justifyContent:'space-between'}}>
@@ -2387,7 +2403,7 @@ function FuelTab({daily, setDaily, startDate}) {
       <div className="phase-tabs">
         {DIET.map((d,i)=>(
           <button key={i} className={`phase-tab ${selPhase===i?'active':''}`} onClick={()=>setSelPhase(i)}>
-            {d.label}
+            {d.week}
           </button>
         ))}
       </div>
@@ -2726,26 +2742,6 @@ function ProgressTab({weights, setWeights, daily, setDaily, photos, setPhotos, m
         </div>
       )}
 
-      {/* PHOTOS */}
-      <div className="card">
-        <div style={{fontSize:13,fontWeight:800,color:'var(--text)',marginBottom:12}}>Progress Photos</div>
-        <div className="photo-grid">
-          <label className="photo-add">
-            <span style={{fontSize:24}}>📸</span>
-            <span>Add Photo</span>
-            <input type="file" accept="image/*" capture="environment" style={{display:'none'}} onChange={logPhoto}/>
-          </label>
-          {[...photos].reverse().slice(0,8).map((p,i)=>(
-            <div key={i} className="photo-cell" onClick={()=>setViewPhoto(p)}>
-              <img src={p.dataUrl} alt="progress"/>
-              <div className="photo-lbl">{new Date(p.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</div>
-              <button onClick={e=>{e.stopPropagation();setPhotos(prev=>prev.filter(x=>x!==p));}}
-                style={{position:'absolute',top:4,right:4,width:22,height:22,borderRadius:'50%',background:'rgba(0,0,0,.55)',border:'none',color:'#fff',fontSize:14,lineHeight:'22px',textAlign:'center',cursor:'pointer',padding:0}}>×</button>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* MEASUREMENTS */}
       <div className="card">
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',paddingBottom:12,borderBottom:'1px solid var(--border)',marginBottom:4}}>
@@ -2838,6 +2834,26 @@ function ProgressTab({weights, setWeights, daily, setDaily, photos, setPhotos, m
             )}
           </>
         )}
+      </div>
+
+      {/* PHOTOS */}
+      <div className="card">
+        <div style={{fontSize:13,fontWeight:800,color:'var(--text)',marginBottom:12}}>Progress Photos</div>
+        <div className="photo-grid">
+          <label className="photo-add">
+            <span style={{fontSize:24}}>📸</span>
+            <span>Add Photo</span>
+            <input type="file" accept="image/*" capture="environment" style={{display:'none'}} onChange={logPhoto}/>
+          </label>
+          {[...photos].reverse().slice(0,8).map((p,i)=>(
+            <div key={i} className="photo-cell" onClick={()=>setViewPhoto(p)}>
+              <img src={p.dataUrl} alt="progress"/>
+              <div className="photo-lbl">{new Date(p.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</div>
+              <button onClick={e=>{e.stopPropagation();setPhotos(prev=>prev.filter(x=>x!==p));}}
+                style={{position:'absolute',top:4,right:4,width:22,height:22,borderRadius:'50%',background:'rgba(0,0,0,.55)',border:'none',color:'#fff',fontSize:14,lineHeight:'22px',textAlign:'center',cursor:'pointer',padding:0}}>×</button>
+            </div>
+          ))}
+        </div>
       </div>
 
       {viewPhoto && (
